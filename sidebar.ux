@@ -1,0 +1,34 @@
+<StackPanel ux:Class="Sidebar" Background="#212831">
+<!--     <WhileInactive Threshold="0.4">
+        <Move Target="user" X="-180" Duration="0.2" Delay="0.3" Easing="CircularIn" />
+        <Move Target="stats" X="-180" Duration="0.2" Delay="0.2" Easing="CircularIn" />
+        <Move Target="browser" X="-180" Duration="0.2" Delay="0.15" Easing="CircularIn" />
+        <Move Target="feed" X="-180" Duration="0.2" Delay="0.1" Easing="CircularIn" />
+        <Move Target="chat" X="-180" Duration="0.2" Delay="0.05" Easing="CircularIn" />
+    </WhileInactive> -->
+    <StackPanel ux:Class="MenuPanel" ux:Name="self">
+        <string ux:Property="MenuText" ux:Value="MyButton" />
+        <Text  Value="{Property self.MenuText}" FontSize="16" TextColor="#FFF" Alignment="Center" />
+        <Rectangle Height="1" Width="40" Fill="#FF0" />
+    </StackPanel>
+    <StatusBarBackground Background="#909498" />
+    <StackPanel ItemSpacing="20">
+        <Text Margin="0,20,0,0" FontSize="18" TextColor="#FFF" Alignment="Center">
+            About
+        </Text>
+        <Panel>
+            <Text  TextWrapping="Wrap" FontSize="12" TextColor="#FFF"> 
+                All Data are taken from Internet. We have no response for the conrectness.
+            </Text>
+        </Panel>
+        <MenuPanel MenuText="2015">
+            <Clicked Handler="{data2015}" />
+        </MenuPanel>
+        <MenuPanel MenuText="2014">
+            <Clicked Handler="{data2014}" />
+        </MenuPanel>
+        <MenuPanel MenuText="2013">
+             <Clicked Handler="{data2013}" />
+        </MenuPanel>
+    </StackPanel>
+</StackPanel>

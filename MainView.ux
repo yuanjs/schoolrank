@@ -1,0 +1,192 @@
+<App Theme="Basic">
+	<JavaScript File="./school2015.js" ux:Global="schools2015" />
+	<JavaScript File="./school2013.js" ux:Global="schools2013" />
+	<JavaScript File="./school2014.js" ux:Global="schools2014" />
+	<JavaScript>
+		var Observable = require("FuseJS/Observable");
+
+		var schoolsData = [];
+		var schoolsData2013 = [];
+		var schoolsData2014 = [];
+		var schoolsData2015 = [];
+		var filterSchools = Observable();
+		schoolsData2013 = require("schools2013").allschools.schools;
+		schoolsData2014 = require("schools2014").allschools.schools;
+		schoolsData2015 = require("schools2015").allschools.schools;
+
+		var titleString = Observable("School Rank 2015");
+		var activePage = Observable("main");
+
+		schoolsData = schoolsData2015;
+		filterSchools.replaceAll(schoolsData);
+
+		var valueChanged = function (args) {
+			filterSchools.replaceAll(schoolsData.filter(function(e){
+				if (e.schoolName.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
+        			return true;
+        		} else {
+        			return false;
+        		}
+			}));
+    	};
+
+    	var areaChanged = function(args) {
+			filterSchools.replaceAll(schoolsData.filter(function(e){
+				if (e.locality.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
+        			return true;
+        		} else {
+        			return false;
+        		}
+			}));    	
+		};
+
+		function data2015(){
+			schoolsData = schoolsData2015;
+			filterSchools.replaceAll(schoolsData);
+			titleString.value="School Rank 2015";
+			activePage.value="main";
+		};
+
+		function data2014(){
+			schoolsData = schoolsData2014;
+			filterSchools.replaceAll(schoolsData);
+			titleString.value="School Rank 2014";
+			activePage.value="main";
+		};
+
+		function data2013(){
+			schoolsData = schoolsData2013;
+			filterSchools.replaceAll(schoolsData);
+			titleString.value="School Rank 2013";
+			activePage.value="main";
+		};
+		module.exports = {
+			titleString: titleString,
+			valueChanged: valueChanged,
+			areaChanged: areaChanged,
+			filterSchools: filterSchools,
+			data2015: data2015,
+			data2014: data2014,
+			data2013: data2013,	
+			activePage: activePage,
+		};
+	</JavaScript>
+
+	<EdgeNavigator ux:Name="EdgeNavigator" Active="{activePage}">
+
+		<!-- Add a panel to the left edge -->
+		<Sidebar Width="180" ux:Name="menu" EdgeNavigation.Edge="Left">
+			<ActivatingAnimation>
+				<Change mainAppTranslation.X="180" />
+				<!-- Change to cross out -->
+				<Change topMenuTranslation.Y="0" />
+				<Change bottomMenuTranslation.Y="0" />
+				<Change middleRectangle.Opacity="0" Easing="CircularOut" />
+				<Change topMenuRotation.Degrees="45" Easing="ExponentialIn" />
+				<Change bottomMenuRotation.Degrees="-45" Easing="ExponentialIn" />
+				<Change topRectangle.Width="28" />
+				<Change bottomRectangle.Width="28" />
+			</ActivatingAnimation>
+		</Sidebar>
+
+	<DockPanel ux:Name="main">
+		<Panel ux:Class="HorizontalBar" Margin="10,10,0,10"
+										Alignment="VerticalCenter">
+										<Rectangle Height="1" Fill="#dcdee3" />
+									</Panel>
+		<Text ux:Class="OtherText" FontSize="10" TextColor="#FFE52C"/>
+		<Text ux:Class="OtherContain" FontSize="12" TextColor="#368FFF" />
+
+		<Translation ux:Name="mainAppTranslation" />
+		<StatusBarBackground Dock="Top"/>
+		<BottomBarBackground Dock="Bottom"/>
+			<StackPanel Dock="Top">
+
+				<!-- This is the top ledge -->
+				<Grid ColumnData="auto,1*,auto"  Background="White">
+					<Panel Margin="7,5,5,5" Height="32" Width="32" HitTestMode="LocalBounds">
+						<Clicked>
+							<Set EdgeNavigator.Active="menu" />
+						</Clicked>
+						<Rectangle ux:Name="topRectangle" Height="2" Width="26" Fill="#000">
+							<Translation Y="-9" ux:Name="topMenuTranslation" />
+							<Rotation ux:Name="topMenuRotation" />
+						</Rectangle>
+						<Rectangle ux:Name="middleRectangle" Height="2" Width="26" Fill="#000" />
+						<Rectangle ux:Name="bottomRectangle" Height="2" Width="26" Fill="#000">
+							<Translation Y="9" ux:Name="bottomMenuTranslation" />
+							<Rotation ux:Name="bottomMenuRotation" />
+						</Rectangle>
+					</Panel>
+
+					<Text FontSize="22" Alignment="VerticalCenter" TextAlignment="Center"
+						Value="{titleString}" Padding="2">
+						<Font File="assets/fonts/AlegreyaSans-Bold.otf" />
+					</Text>
+<!-- 
+					<Panel Margin="5,5,7,5" Height="32" Width="32" HitTestMode="LocalBounds">
+						<Clicked>
+							<DebugAction Message="Search clicked" />
+						</Clicked>
+						<Circle Height="20" Width="20">
+							<Stroke Width="2" Brush="#000" />
+						</Circle>
+						<Rectangle Width="7" Height="3" Fill="#000">
+							<Translation X="8" Y="8" />
+							<Rotation Degrees="45" />
+						</Rectangle>
+					</Panel> -->
+				</Grid>
+				<Rectangle Height="1" Margin="0,5,0,0" Fill="#333c48" />
+			</StackPanel>
+
+
+		<!-- This is the main scroll area -->
+		<Grid Columns="6*,4*" ux:Name="SearchBar" Dock="Top" >
+			<TextInput PlaceholderText="School Name" PlaceholderColor="#eee" ValueChanged="{valueChanged}"/>
+			<TextInput PlaceholderText="Area" PlaceholderColor="#eee" ValueChanged="{areaChanged}" />
+		</Grid>
+
+		<ScrollView>
+			<ScrollingAnimation From="0" To="50">
+                <Change SearchBar.Visibility="Collapsed" />
+            </ScrollingAnimation>
+
+			<StackPanel Alignment="Top" Margin="5,0,0,0">
+				<Each Items="{filterSchools}">
+					<!-- <StackPanel Orientation="Horizontal"> -->
+					<Grid Columns="1*,9*">
+						<Text Value="{rank}" FontSize="22" TextColor="#FF3B45" Alignment="Center"/>
+						<StackPanel Orientation="Vertical" Margin="20,0,0,0">
+							<Text Value="{schoolName}" FontSize="16" TextColor="#FF570F"/>
+							<Panel>
+								<Grid RowCount="2" Columns="2*,2*,3*,2*" >
+									<OtherText Value="40+" />
+									<OtherText Value="Median" />
+									<OtherText Value="Locality" />
+									<OtherText Value="Students" />
+									<OtherContain Value="{score40plus}" />
+									<OtherContain Value="{medianScore}" />
+									<OtherContain Value="{locality}" />
+									<OtherContain Value="{studentsNumber}" />
+								</Grid>
+							</Panel>
+						</StackPanel>
+					</Grid>
+					<!-- </StackPanel> -->
+					<HorizontalBar />
+<!-- 					<RemovingAnimation>
+						<Move RelativeTo="Size" Y="-1" Duration="0.4" Easing="CircularInOut" />
+					</RemovingAnimation>
+
+					<LayoutAnimation>
+						<Move RelativeTo="LayoutChange" Y="1" Duration="0.8" Easing="CircularInOut" />
+					</LayoutAnimation>
+ -->
+ 				</Each>				
+			</StackPanel>
+		</ScrollView>
+	</DockPanel>	
+	</EdgeNavigator>
+</App>
+
