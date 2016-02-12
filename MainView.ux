@@ -20,24 +20,42 @@
 		schoolsData = schoolsData2015;
 		filterSchools.replaceAll(schoolsData);
 
-		var valueChanged = function (args) {
-			filterSchools.replaceAll(schoolsData.filter(function(e){
-				if (e.schoolName.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
+		var filterString = Observable("");
+		var filterbySchoolName = true;
+
+        viewSchools = filterSchools.where(function(e){
+            return Observable(function(){
+            		var compareValue = filterbySchoolName ? e.schoolName.toLowerCase() : e.locality.toLowerCase();
+            		if (compareValue.indexOf(filterString.value.toLowerCase()) >=0){
         			return true;
-        		} else {
-        			return false;
-        		}
-			}));
+	        		} else {
+    	    			return false;
+        			};
+                });
+            });
+            		
+		var valueChanged = function (args) {
+			// filterSchools.replaceAll(schoolsData.filter(function(e){
+			// 	if (e.schoolName.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
+   //      			return true;
+   //      		} else {
+   //      			return false;
+   //      		}
+			// }));
+			filterbySchoolName = true;
+			filterString.value = args.value;
     	};
 
     	var areaChanged = function(args) {
-			filterSchools.replaceAll(schoolsData.filter(function(e){
-				if (e.locality.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
-        			return true;
-        		} else {
-        			return false;
-        		}
-			}));    	
+			// filterSchools.replaceAll(schoolsData.filter(function(e){
+			// 	if (e.locality.toLowerCase().indexOf(args.value.toLowerCase()) >=0){
+   //      			return true;
+   //      	   	} else {
+   //      			return false;
+   //      		}
+			// }))
+			filterbySchoolName = false;
+			filterString.value = args.value;
 		};
 
 		function data2015(){
@@ -60,15 +78,16 @@
 			titleString.value="School Rank 2013";
 			activePage.value="main";
 		};
+
 		module.exports = {
 			titleString: titleString,
 			valueChanged: valueChanged,
 			areaChanged: areaChanged,
-			filterSchools: filterSchools,
 			data2015: data2015,
 			data2014: data2014,
 			data2013: data2013,	
 			activePage: activePage,
+			viewSchools: viewSchools,
 		};
 	</JavaScript>
 
@@ -153,7 +172,7 @@
             </ScrollingAnimation>
 
 			<StackPanel Alignment="Top" Margin="5,0,0,0">
-				<Each Items="{filterSchools}">
+				<Each Items="{viewSchools}">
 					<!-- <StackPanel Orientation="Horizontal"> -->
 					<Grid Columns="1*,9*">
 						<Text Value="{rank}" FontSize="22" TextColor="#FF3B45" Alignment="Center"/>

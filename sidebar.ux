@@ -6,8 +6,8 @@
         <Move Target="feed" X="-180" Duration="0.2" Delay="0.1" Easing="CircularIn" />
         <Move Target="chat" X="-180" Duration="0.2" Delay="0.05" Easing="CircularIn" />
     </WhileInactive> -->
-    <StackPanel ux:Class="MenuPanel" ux:Name="self">
-        <string ux:Property="MenuText" ux:Value="MyButton" />
+    <StackPanel ux:Class="MenuPanel" ux:Name="self" MenuText="MyButton">
+        <string ux:Property="MenuText" />
         <Text  Value="{Property self.MenuText}" FontSize="16" TextColor="#FFF" Alignment="Center" />
         <Rectangle Height="1" Width="40" Fill="#FF0" />
     </StackPanel>
